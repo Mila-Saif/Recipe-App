@@ -1,8 +1,8 @@
 'use client';
 import image from '../public/Party 🥳  sticker pack _ AI Emoji Generator.jpg'
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {useRouter} from 'next/navigation';
-import { Search } from 'lucide-react';
+import { Search, Flame } from 'lucide-react';
 
 
 
@@ -11,6 +11,7 @@ import { Search } from 'lucide-react';
 export default function Home() {
 
   const [query, setQuery] = useState('');
+  const [randomRecipes, setRandomRecipes] = useState([]);
 
   const router = useRouter();
 
@@ -28,7 +29,34 @@ export default function Home() {
     }
   };
 
+  useEffect(() => {
 
+  const fetchRandomRecipes = async () => {
+    try {
+      const apiKey = process.env.NEXT_PUBLIC_SPOONACULAR_API_KEY;
+      if (!apiKey) {
+        throw new Error('Spoonacular API key is not set in environment variables');
+      }
+
+      const response = await fetch(`https://api.spoonacular.com/recipes/random?number=9&apiKey=${apiKey}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch random recipes');
+      }
+      
+      const data = await response.json();
+      setRandomRecipes(data.recipes || []);
+    }
+
+    catch (error) {
+      console.error('Error fetching random recipes:', error);
+    }
+  };
+
+  fetchRandomRecipes();
+
+
+}
+  , []);
 
 
 
@@ -38,7 +66,7 @@ export default function Home() {
 
 
   return (
-    <div className=" min-h-screen bg-zinc-50 font-sans dark:bg-white">
+    <div className=" min-h-screen bg-white font-sans dark:bg-white">
 
       {/* the header card */}
       <div className='flex flex-row absolute left-4 top-4 items-center gap-4'>
@@ -61,7 +89,30 @@ export default function Home() {
       </div>
 
       {/* the end of the header card  */}
-   
+
+
+      {/* Random Recipes */}
+      <div className="mt-20 p-4">
+        <div className='flex justify-center gap-1  mb-4'>
+          <Flame className="h-6 w-6 text-red-500" />
+          <h2 className="text-lg font-bold mb-4">Trending Recipes</h2>
+
+        </div>
+
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-4">
+          {randomRecipes.map((recipe: any) => (
+            <div key={recipe.id} className="border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+              <img src={recipe.image} alt={recipe.title} className="w-full h-48 object-cover rounded-md mb-4" />
+              <h2 className="text-sm font-semibold">{recipe.title}</h2>
+              
+            </div>
+          ))}
+        </div>
+      </div>
+
+
+      {/* End random recipes */}
     </div>
   );
 }

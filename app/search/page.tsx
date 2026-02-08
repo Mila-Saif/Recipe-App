@@ -7,14 +7,13 @@ async function fetchRecipes(query: string) {
   if (!apiKey) {
     throw new Error('Spoonacular API key is not set in environment variables');
   }
-  console.log("Fetching URL:", `https://api.spoonacular.com/recipes/complexSearch?query=${query}&apiKey=${apiKey}`);
 
   const response = await fetch(`https://api.spoonacular.com/recipes/complexSearch?query=${encodeURIComponent(query)}&number=10&apiKey=${apiKey}`);
   if (!response.ok) {
     throw new Error('Failed to fetch recipes');
   }
+
   const data = await response.json();
-  console.log("API Response:", data);
   return data.results;
 }
 export default async function SearchPage ({searchParams}: {searchParams: {query: string}}) {
@@ -39,7 +38,7 @@ export default async function SearchPage ({searchParams}: {searchParams: {query:
           <ArrowLeft className="h-4 w-4" />
         </Link>
 
-        <h1 className="text-lg font-semibold">Results for: <span className='text-red-800'>{query}</span> </h1>
+        <h1 className="text-lg font-semibold">Results for <span className='text-red-800'>{query}</span> </h1>
       </div>
        {/* end of header and back button  */}
 
@@ -49,7 +48,7 @@ export default async function SearchPage ({searchParams}: {searchParams: {query:
           {recipes.map((recipe: any) => (
             <div key={recipe.id} className="border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
               <img src={recipe.image} alt={recipe.title} className="w-full h-48 object-cover rounded-md mb-4" />
-              <h2 className="text-lg font-semibold">{recipe.title}</h2>
+              <h2 className="text-sm font-semibold">{recipe.title}</h2>
               <p className="text-sm text-gray-600">{recipe.summary}</p>
             </div>
           ))}
