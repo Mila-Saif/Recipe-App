@@ -90,9 +90,9 @@ export default function Home() {
     <div className=" min-h-screen bg-white font-sans dark:bg-white">
 
       {/* the header card */}
-      <div className='flex flex-row absolute left-4 top-4 items-center gap-4'>
+      <div className='flex flex-row absolute left-4 md:py-12 top-4 items-center gap-4'>
         <img src={image.src} alt="pizza png" className='h-16 w-16 ' />
-        <span className='text-2xl mt-1 font-semibold text-black dark:text-black'>Find Recipes</span>
+        <span className='text-2xl md:text-5xl mt-1 font-semibold text-black dark:text-black'>Find Recipes</span>
 
 
       </div>

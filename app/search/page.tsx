@@ -1,6 +1,6 @@
 
 import Link from 'next/link';
-import { Search, ArrowLeft} from 'lucide-react';
+import {  ArrowLeft} from 'lucide-react';
 
 async function fetchRecipes(query: string) {
   const apiKey = process.env.NEXT_PUBLIC_SPOONACULAR_API_KEY;
@@ -8,7 +8,8 @@ async function fetchRecipes(query: string) {
     throw new Error('Spoonacular API key is not set in environment variables');
   }
 
-  const response = await fetch(`https://api.spoonacular.com/recipes/complexSearch?query=${encodeURIComponent(query)}&number=10&apiKey=${apiKey}`);
+  const response = await fetch(`https://api.spoonacular.com/recipes/complexSearch?query=${encodeURIComponent(query)}&number=10&apiKey=${apiKey}`, {next: {revalidate: 86400}});
+
   if (!response.ok) {
     throw new Error('Failed to fetch recipes');
   }
