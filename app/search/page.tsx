@@ -42,24 +42,35 @@ export default async function SearchPage ({searchParams}: {searchParams: {query:
       </div>
        {/* end of header and back button  */}
 
+        {/* the search results  */}
+
 
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-4">
           {recipes.map((recipe: any) => (
             <div key={recipe.id} className="border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-              <img src={recipe.image} alt={recipe.title} className="w-full h-48 object-cover rounded-md mb-4" />
-              <h2 className="text-sm font-semibold">{recipe.title}</h2>
-              <p className="text-sm text-gray-600">{recipe.summary}</p>
+              <Link href={`/recipe/${recipe.id}`} className='relative h-48 overflow-hidden hover:scale-105 transition-transform duration-500'>
+                <img src={recipe.image} alt={recipe.title} className="w-full h-48 object-cover hover:scale-105 transition-transform duration-500 rounded-md mb-4" />
+              </Link>
+
+                <div className='p-4  flex items-center justify-between gap-4 '>
+                  <h2 className="text-sm font-bold line-clamp-2 leading-tight text-gray-800">{recipe.title}</h2>
+
+                   
+
+                  <Link href={`/recipe/${recipe.id}`} className='shrink-0'>
+                    <button className="bg-red-800 text-white p-2 text-sm rounded-md hover:bg-red-900 focus:outline-none shrink-0">View Recipe</button></Link>
+                  
+
+                </div>
+           
+              
+              
             </div>
           ))}
         </div>
 
-        {recipes.length === 0 && (
-          <div className="text-center mt-8">
-            <Search size={48} className="mx-auto text-gray-400" />
-            <h2 className="text-2xl font-semibold mt-4">No recipes found</h2>
-          </div>
-        )}
+      {/* the end of the search results  */} 
     </div>
   );
 }
