@@ -2,7 +2,7 @@
 import image from '../public/Party 🥳  sticker pack _ AI Emoji Generator.jpg'
 import {useState, useEffect} from 'react';
 import {useRouter} from 'next/navigation';
-import { Search, Flame } from 'lucide-react';
+import { Search, Flame, Heart } from 'lucide-react';
 import Link from 'next/link';
 
 
@@ -92,32 +92,54 @@ export default function Home() {
       {/* the header card */}
       <div className='flex flex-row absolute left-4  top-4 items-center gap-4'>
         <img src={image.src} alt="pizza png" className='h-16 w-16 ' />
-        <span className='text-2xl mt-1 font-semibold text-black dark:text-black'>Find Recipes</span>
+        <div className='flex flex-center flex-col mt-2'>
+        <h2 className='text-2xl mt-1 font-semibold text-black dark:text-black'>SpoonaKolar</h2>
+        <p className='text-gray-600 font-light text-sm'>Find Recipes</p>
+        </div>
+
 
 
       </div>
     
 
       <div className="absolute flex flex-row gap-2 items-center right-4 top-4 mt-4" >
+        <a href='#favorites' className="flex items-center gap-2 bg-red-50 text-red-600 hover:text-white hover:bg-red-800 rounded-full shadow p-3 " >
+          <Heart className="h-4 w-4" />
+          <span className=" hidden md:inline">My Favorites</span>
+
+        </a>
+
+      
+   
+
+      </div>
+
+      <div className="  max-w-3xl mx-auto mt-20 md:mt-4 p-4 flex items-center gap-2 text-center">
         <input  value={query} onChange={(e) => setQuery(e.target.value)} onKeyDown={handleKeyDown}
         type="text"  placeholder="Search recipes..." className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-zinc-500 dark:bg-white dark:border-zinc-700 dark:text-black" />
 
         <button 
-        onClick={handleSearch} className=" bg-red-800  text-white p-3 rounded-md hover:bg-red-900 focus:outline-none ">
+        onClick={handleSearch} className="   bg-red-800  text-white p-3 rounded-md hover:bg-red-900 focus:outline-none ">
           <Search className="h-4 w-4" />
         </button>
-
       </div>
 
       {/* the end of the header card  */}
 
 
       {/* Random Recipes */}
-      <div className="mt-20 p-4">
-        <div className='flex justify-center gap-1  mb-4'>
-          <Flame className="h-6 w-6 text-red-500" />
-          <p className="text-lg font-bold mb-4">Trending Recipes</p>
+      <div className="mt-2 p-2">
+        <div className='flex flex-col items-center text-center gap-1  mb-4'>
+          <div className="flex items-center gap-2">
+            <Flame className="h-6 w-6 text-red-500" />
+            <p className="text-lg font-bold ">Trending Recipes</p>
 
+
+          </div>
+            <p className="text-gray-600 text-sm">Find new recipes and their ingredients below</p>
+
+         
+          
         </div>
 
 
