@@ -1,5 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import BackButton from "./BackButton";
 
 async function fetchRecipeDetails(id: string) {
   const apiKey = process.env.NEXT_PUBLIC_SPOONACULAR_API_KEY;
@@ -24,10 +25,7 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
 
     <div className="min-h-screen md:p-8 p-4">
       <div className="mb-8 flex items-center gap-4">
-        <Link href="/" className="flex items-center text-gray-600 hover:text-gray-800 rounded-full shadow p-3 ">
-          
-          <ArrowLeft className="h-4 w-4" />
-        </Link>
+        <BackButton />
 
         <h1 className="text-lg font-semibold">{recipe.title}</h1>
       </div>
