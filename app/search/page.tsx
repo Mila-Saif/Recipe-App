@@ -1,6 +1,7 @@
 
 import Link from 'next/link';
 import {  ArrowLeft} from 'lucide-react';
+import FavoriteButton from '../components/FavoriteButton';
 
 async function fetchRecipes(query: string) {
   const apiKey = process.env.NEXT_PUBLIC_SPOONACULAR_API_KEY;
@@ -49,7 +50,13 @@ export default async function SearchPage ({searchParams}: {searchParams: {query:
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-4">
           {recipes.map((recipe: any) => (
+            
             <div key={recipe.id} className="border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+              <div className='flex justify-end pb-4'>
+                <FavoriteButton recipe={recipe} />
+
+
+              </div>
               <Link href={`/recipe/${recipe.id}`} className='relative h-48 overflow-hidden hover:scale-105 transition-transform duration-500'>
                 <img src={recipe.image} alt={recipe.title} className="w-full h-48 object-cover hover:scale-105 transition-transform duration-500 rounded-md mb-4" />
               </Link>

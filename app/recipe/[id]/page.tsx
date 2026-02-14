@@ -1,6 +1,6 @@
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
+
 import BackButton from "./BackButton";
+import FavoriteButton from "@/app/components/FavoriteButton";
 
 async function fetchRecipeDetails(id: string) {
   const apiKey = process.env.NEXT_PUBLIC_SPOONACULAR_API_KEY;
@@ -31,12 +31,23 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
       </div>
     
       <div className="max-w-5xl mx-auto rounded-2xl shadow-sm border border-gray-50 overflow-hidden">
+
         <div className="p-8 border-b border-gray-300">
           <img src={recipe.image} alt={recipe.title} className="w-full h-64 object-cover rounded-md mb-4" />
+          <div className='flex gap-2  items-center justify-end pb-4'>
+            <div className='flex bg-red-50 rounded-full pr-4 transition-colors hover:bg-red-100  '>
+              <FavoriteButton recipe={recipe} />
+              <span className=" text-red-700  p-3">Add to favorite</span>
+
+
+            </div>
+
+          </div>
 
   
 
         </div>
+        
         <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x border-gray-100">
 
           {/* ingerdients */}

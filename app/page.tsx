@@ -4,7 +4,8 @@ import {useState, useEffect} from 'react';
 import {useRouter} from 'next/navigation';
 import { Search, Flame, Heart } from 'lucide-react';
 import Link from 'next/link';
-
+import FavoriteButton from './components/FavoriteButton';
+import FavoriteCard from './components/FavoriteCard';
 
 
 
@@ -103,12 +104,8 @@ export default function Home() {
     
 
       <div className="absolute flex flex-row gap-2 items-center right-4 top-4 mt-4" >
-        <a href='#favorites' className="flex items-center gap-2 bg-red-50 text-red-600 hover:text-white hover:bg-red-800 rounded-full shadow p-3 " >
-          <Heart className="h-4 w-4" />
-          <span className=" hidden md:inline">My Favorites</span>
 
-        </a>
-
+        <FavoriteCard />
       
    
 
@@ -147,9 +144,15 @@ export default function Home() {
           {randomRecipes.map((recipe: any) => (
 
             <div key={recipe.id} className="border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-              <Link href={`/recipe/${recipe.id}`} className='relative h-48 overflow-hidden hover:scale-105 transition-transform duration-500'>
-                <img src={recipe.image} alt={recipe.title} className="w-full h-48 object-cover hover:scale-105 transition-transform duration-500 rounded-md mb-4" />
+              <div className='flex justify-end pb-4'>
+                <FavoriteButton recipe={recipe} />
+
+
+              </div>
+              <Link href={`/recipe/${recipe.id}`} className='w-full block h-48 overflow-hidden hover:scale-105 transition-transform duration-500'>
+                  <img src={recipe.image} alt={recipe.title} className="w-full h-48 object-cover hover:scale-105 transition-transform duration-500 rounded-md mb-4" />
               </Link>
+
 
                 <div className='p-4  flex items-center justify-between gap-4 '>
                   <h2 className="text-sm font-bold line-clamp-2 leading-tight text-gray-800">{recipe.title}</h2>
