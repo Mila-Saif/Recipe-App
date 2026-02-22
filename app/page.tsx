@@ -1,11 +1,22 @@
 'use client';
 import image from '../public/Party 🥳  sticker pack _ AI Emoji Generator.jpg'
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import {useRouter} from 'next/navigation';
-import { Search, Flame, Heart } from 'lucide-react';
+import { Search, Flame, Filter, X, Check } from 'lucide-react';
 import Link from 'next/link';
 import FavoriteButton from './components/FavoriteButton';
 import FavoriteCard from './components/FavoriteCard';
+import MultiSelect from './components/MultiSelect';
+import { spawn } from 'child_process';
+
+
+const Common_Ingredients = [
+  'Flour', 'Sugar', 'Butter', 'Milk', 'Eggs', 'Vanilla', 'Baking Powder',
+  'Chocolate', 'Strawberries', 'Blueberries', 'Apple', 'Banana',
+  'Chicken', 'Beef', 'Pork', 'Fish', 'Shrimp',
+  'Tomato', 'Potato', 'Onion', 'Garlic', 'Carrot', 'Spinach', 'Broccoli',
+  'Rice', 'Pasta', 'Cheese', 'Olive Oil'
+];
 
 
 
@@ -15,21 +26,63 @@ export default function Home() {
   const [query, setQuery] = useState('');
   const [randomRecipes, setRandomRecipes] = useState([]);
 
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [ingredientsSearch, setIngredientsSearch] = useState('');
+
+  const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
+
+  const filterRef = useRef<HTMLDivElement>(null);
+
   const router = useRouter();
 
-  const handleSearch = async () => {
-    if (query.trim() !== '') {
-    
-      router.push(`/search?query=${encodeURIComponent(query)}`);
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+        setIsFilterOpen(false)
+      }
     }
 
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleSearch = async () => {
+    const params = new URLSearchParams();
+
+    if (query.trim()) params.append('query', query);
+    
+    if (selectedIngredients.length > 0 ) {
+      params.append('ingredients', selectedIngredients.join(','));
+      
+    } 
+
+    if (params.toString()) {
+      router.push(`/search?${params.toString()}`);
+    }
   };
+    
+  
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleSearch();
     }
   };
+
+  const toggleIngredient = (ingredient: string) => {
+    if (selectedIngredients.includes(ingredient)) {
+      setSelectedIngredients(selectedIngredients.filter(item => item !== ingredient));
+
+    }else {
+      setSelectedIngredients([...selectedIngredients, ingredient]);
+
+    }
+    setIngredientsSearch('');
+  };
+
+  const filteredIngredients = Common_Ingredients.filter(ing => 
+    ing.toLocaleLowerCase().includes(ingredientsSearch.toLocaleLowerCase())
+  );
 
   useEffect(() => {
 
@@ -111,17 +164,152 @@ export default function Home() {
 
       </div>
 
-      <div className="  max-w-3xl mx-auto mt-20 md:mt-4 p-4 flex items-center gap-2 text-center">
-        <input  value={query} onChange={(e) => setQuery(e.target.value)} onKeyDown={handleKeyDown}
+
+      <div className="  max-w-3xl mx-auto mt-20 md:mt-4 p-4 flex items-center gap-2 w-full">
+        {/* filter starts */}
+        
+
+          <div className='relative flex-1 ' ref={filterRef}>
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
+              type='text'
+              placeholder='Search recipes'
+              
+              className='w-full h-[52px] p-3 pr-12 border border-gray-300 rounded-md focus:outline-none focus:ring-zinc-500 shadow-sm text-lg '
+            
+            />
+
+            <button
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className={`absolute right-3 top-1/2 transform -translate-y-1/2 p-1 rounded-md transition-colors focus:outline-none ${selectedIngredients.length > 0 ? 'text-red-800 hover:text-red-900 bg-red-50' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'}`}
+            
+            >
+              <Filter
+                className='h-5 w-5'
+              />
+
+              {selectedIngredients.length > 0 && (
+                <span className='absolute -top-1 -right-1 flex h-[14px] w-[14px] items-center justify-center rounded-full bg-red-800 text-[9px] font-bold text-white border border-white'>
+                    {selectedIngredients.length}
+                </span>
+              )}
+
+            </button>
+
+            {isFilterOpen && (
+              <div className='absolute right-0 top-full mt-2 w-72 bg-white border border-gray-200 rounded-xl shadow-2xl z-50 overflow-hidden'>
+                <div className='p-3 border-b border-gray-100 bg-gray-50'>
+
+               
+                    <p className='text-sm font-bold text-gray-700 mb-2 '> Filter Ingredients
+
+                    </p>
+                    <input
+                    type="text"
+                    placeholder='Search Ingredients list...'
+                    value={ingredientsSearch}
+                    onChange={(e) => setIngredientsSearch(e.target.value)}
+                    className='w-full p-2 text-sm border border-gray-300 rounded focus:outline-none focus:border-red-800'
+                    />
+                </div>
+             
+
+            {selectedIngredients.length > 0 && (
+              <div className='p-2 flex flex-wrap gap-2 border-b border-gray-100 bg-white'>
+                {selectedIngredients.map(ing => (
+                  <span key={ing} className='bg-red-50 text-red-800 text-xs px-2 py-1 rounded-full flex items-center gap-1 border border-red-100 shadow-sm'>
+                    {ing}
+                    <X className='h-3 w-3 cursor-pointer hover:text-red-600' 
+                    onClick={() => toggleIngredient(ing)}
+                    />
+                    
+                      </span>
+                    ))}
+
+              
+
+              </div>
+ 
+              )}
+
+              <div className='max-h-48 overflow-y-auto p-3 bg-white'>
+                {filteredIngredients.length === 0 ? (
+                  <p className='p-3 text-sm text-gray-500 text-center'> No Matches Found
+
+                  </p>
+                ) : (
+                  filteredIngredients.map(ing => (
+                    <div 
+                      key={ing}
+                      onClick={() => toggleIngredient(ing)}
+                      className='Px-3 py-2 text-sm cursor-pointer hover:bg-red-50 flex items-center justify-between rounded-md transition-colors'
+                    >
+                      <span className={selectedIngredients.includes(ing) ? 'font-bold text-red-800 ' : 'text-gray-700'}> {ing}
+
+                      </span>
+
+                      {selectedIngredients.includes(ing) && <Check className='h-4 w-4 text-red-800'/>}
+
+                    </div>
+                  ))
+
+
+                )}
+
+              </div>
+            </div>
+
+
+
+
+          )}
+
+          </div>
+
+          <button 
+          onClick={handleSearch}
+          className='bg-red-800 text-white p-3 rounded-md hover:bg-red-900 focus:outline-none shadow-sm h-[52px] w-[52px] flex items-center justify-center shrink-0 '
+          >
+            <Search className='h-5 w-5'/>
+
+          </button>
+
+        
+
+     </div>
+
+      
+
+
+
+        {/* <input  value={query} onChange={(e) => setQuery(e.target.value)} onKeyDown={handleKeyDown}
         type="text"  placeholder="Search recipes..." className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-zinc-500 dark:bg-white dark:border-zinc-700 dark:text-black" />
 
         <button 
         onClick={handleSearch} className="   bg-red-800  text-white p-3 rounded-md hover:bg-red-900 focus:outline-none ">
           <Search className="h-4 w-4" />
         </button>
-      </div>
+      </div> */}
 
       {/* the end of the header card  */}
+
+
+      {/* the select ingredients */}
+
+      {/* <div className='bg-gray-50 p-4 rounded-lg border border-gray-200 '>
+        <MultiSelect
+        label='Filter Ingredients'
+        placeholder='Select ingredients '
+        options={Common_Ingredients}
+        selected={selectedIngredients}
+        onChange={setSelectedIngredients}
+
+        
+        />
+
+      </div> */}
 
 
       {/* Random Recipes */}
